@@ -139,4 +139,31 @@ inline Print &operator <<(Print &obj, const _TIME &arg)
 obj.print(((arg.minu<10)?":0":":")); obj.print(int(arg.minu));
 obj.print(((arg.sec<10)?":0":":")); obj.print(int(arg.sec));
 return obj; } 
+
+// Peter Harrison - Jan 2018
+// Allow an integer to be right aligned in a field of specified width
+// no attempt is made to guard against overflow - the field will widen
+struct _JUSTIFY {
+  int val;
+  int width;
+  _JUSTIFY(int v, int w) : val(v), width(w) {};
+};
+
+inline Print &operator <<(Print &obj, const _JUSTIFY &arg) {
+  int v = arg.val;
+  int w = arg.width;
+  if (v < 0) {
+    w--;
+  }
+  while (v /= 10) {
+    w--;
+  }
+  while (w > 0) {
+    obj.write(' ');
+    --w;
+  }
+  obj.print(arg.val);
+  return obj;
+}
+
 #endif
